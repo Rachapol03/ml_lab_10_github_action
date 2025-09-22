@@ -39,4 +39,16 @@ def preprocess_data(test_size=0.25, random_state=42):
         pd.concat([X_test, y_test], axis=1).to_csv("processed_data/test.csv", index=False)
 
         mlflow.log_param("test_size", test_size)
-        mlflow.log_metric("training_set_rows", len(X_train
+        mlflow.log_metric("training_set_rows", len(X_train))
+        mlflow.log_metric("test_set_rows", len(X_test))
+        mlflow.log_artifacts("processed_data", artifact_path="processed_data")
+
+        # ส่ง run_id ให้ GitHub Actions
+        if "GITHUB_OUTPUT" in os.environ:
+            with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                print(f"run_id={run_id}", file=f)
+
+        print(f"[OK] Preprocessing Run ID: {run_id}")
+
+if __name__ == "__main__":
+    preprocess_data()
